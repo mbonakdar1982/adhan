@@ -49,9 +49,11 @@ def playdoa(doa='random', duration=0):
     mixer.init()
     sound = mixer.Sound(doaFile)
     length = sound.get_length()
+    print(length)
     sound.play()
     time.sleep(length if duration == 0 else duration * 60)
     return 'OK'
 
 if __name__ == '__main__':
-    playAdhan()
+    playdoa('Friday')
+    playdoa('komeyl')

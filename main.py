@@ -12,13 +12,17 @@ while True:
     hour = int(currentTime[0:2])
     dhuhrAdhan = prayTimes.loc[todayDate, 'dhuhr']
     maghribAdhan = prayTimes.loc[todayDate, 'maghrib']
+    weekday = prayTimes.loc[todayDate, 'weekday']
    
     if currentTime == dhuhrAdhan:
         funcs.playAdhan()
-        funcs.playdoa()
+        funcs.playdoa(doa=weekday)
+        funcs.playdoa(doa='doa')
     if currentTime == maghribAdhan:
         funcs.playAdhan()
-        funcs.playdoa()
+        funcs.playdoa(doa=weekday)
+        funcs.playdoa(doa='doa_komeyl' if weekday == 'Friday' else 'doa')
+    
 
     if (currentTime[-2:] == '30') & (hour < 22) & (hour >= 7):
         funcs.playsound('halfHour')    
@@ -31,6 +35,7 @@ while True:
             funcs.playsound('bell', 4)
         time.sleep(5)
     print(currentTime)
+    print('Weekday: {}'.format(weekday))
     print('Maghrib: {}'.format(maghribAdhan))
     print('dhuhr: {}'.format(dhuhrAdhan))
     funcs.playsound('silence')
