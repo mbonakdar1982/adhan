@@ -5,6 +5,38 @@ import random
 import eyed3
 
 
+def segment(filePath, mode='random'):
+    from pydub import AudioSegment
+    from pydub.silence import split_on_silence
+    
+    
+    sound = AudioSegment.from_mp3(filePath)
+    length = int(len(sound) / 1000)
+    print(length)
+    #audio_chunks = split_on_silence(sound, min_silence_len=500, silence_thresh=-40 )
+    if mode == 'random':
+        first10min = sound[:20000]
+        first10min.export("first10min.mp3", format="mp3")
+        '''
+        for i, chunk in enumerate(audio_chunks):
+            output_file = "chunk{0}.mp3".format(i)
+            print("Exporting file", output_file)
+            chunk.export(output_file, format="mp3")
+        '''
+        #secondHalf = sound[int(length / 2) : ]
+        #secondHalf.export("Friday_secondHalf.mp3", format="mp3")
+    elif mode == 'all':
+
+        pass
+    else:
+        pass
+
+    return None
+        
+
+
+
+
 def playAdhan():
     options = os.listdir('assets/adhan/')
     adhanFile = 'assets/adhan/' + random.choice(options)
@@ -55,5 +87,6 @@ def playdoa(doa='random', duration=0):
     return 'OK'
 
 if __name__ == '__main__':
-    playdoa('Friday')
-    playdoa('komeyl')
+    #playdoa('eftetah_fani_1')
+    #playdoa('eftetah_fani_2')
+    segment('assets/quran/sudais/005.mp3')

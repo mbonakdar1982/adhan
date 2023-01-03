@@ -4,7 +4,7 @@ import funcs
 import time
 import datetime
 
-prayTimes = pd.read_excel('assets/praytimes.xls').set_index('fullDate')
+prayTimes = pd.read_excel('assets/praytimes2023.xlsx').set_index('fullDate')
 while True:
     now = datetime.datetime.now()
     todayDate = now.date().strftime("%d-%m-%Y")
