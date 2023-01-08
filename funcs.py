@@ -3,6 +3,7 @@ import time
 import os
 import random
 import eyed3
+import re
 
 
 def segment(filePath, mode='random'):
@@ -72,21 +73,37 @@ def playsound(what, duration = 0):
 
 def playdoa(doa='random', duration=0):
     if doa == 'random':
-        options = os.listdir('assets/doa/')
-    else:
-        options = [file for file in os.listdir('assets/doa/') if doa in file ]
-    doaFile = 'assets/doa/' + random.choice(options)  
-    print(doaFile)  
+        options = list(set([re.sub(r'[0-9]', '', filename[:-4]) for filename in os.listdir('assets/doa/') if 'doa' in filename]))
+        print(options)
+        selectedOption = random.choice(options) 
+        print('selected option: {}'.format(selectedOption))
+        doaFiles = ['assets/doa/' + f for f in os.listdir('assets/doa/') if selectedOption in f]
+        doaFiles.sort()
+        print('files to be played: {}'.format(doaFiles))
 
+
+
+    else:
+        options = [filename for filename in os.listdir('assets/doa/') if doa in filename]
+        doaFiles = ['assets/doa/' + f for f in os.listdir('assets/doa/') if f in options]
+        doaFiles.sort()
+        print(doaFiles)
+    
+   
+    
+
+
+    
     mixer.init()
-    sound = mixer.Sound(doaFile)
-    length = sound.get_length()
-    print(length)
-    sound.play()
-    time.sleep(length if duration == 0 else duration * 60)
+    for doaFile in doaFiles:
+        sound = mixer.Sound(doaFile)
+        length = sound.get_length()
+        print(doaFile)
+        print(length)
+        sound.play()
+        time.sleep(length if duration == 0 else duration * 60)
     return 'OK'
 
 if __name__ == '__main__':
-    #playdoa('eftetah_fani_1')
-    #playdoa('eftetah_fani_2')
-    segment('assets/quran/sudais/005.mp3')
+    playdoa('Monday')
+    
