@@ -81,19 +81,12 @@ def playdoa(doa='random', duration=0):
         doaFiles.sort()
         print('files to be played: {}'.format(doaFiles))
 
-
-
     else:
         options = [filename for filename in os.listdir('assets/doa/') if doa in filename]
         doaFiles = ['assets/doa/' + f for f in os.listdir('assets/doa/') if f in options]
         doaFiles.sort()
         print(doaFiles)
-    
    
-    
-
-
-    
     mixer.init()
     for doaFile in doaFiles:
         sound = mixer.Sound(doaFile)
