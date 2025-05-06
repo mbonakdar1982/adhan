@@ -9,9 +9,10 @@ import alsaaudio
 m = alsaaudio.Mixer()
 current_volume = m.getvolume()
 print('current volume: {}'.format(current_volume))
-m.setvolume(75)
+m.setvolume(45)
 hijriMonth = {'01': 'Muharram', '02': 'Safar', '03': 'Rabi-al-Awwal', '04': 'Rabi-al-Thani', '05': 'Jumada-al-Awwal', '06': 'Jumada-al-Thani', '07': 'Rajab', '08': 'Shaban', '09': 'Ramadan', '10': 'Shawwal', '11': 'Dhu-al-Qadah', '12': 'Dhu-al-Hijjah'}
-prayTimes = pd.read_excel('assets/praytimes2023.xlsx').set_index('fullDate')
+prayTimes = pd.read_excel('assets/praytimes2025.xlsx').set_index('fullDate')
+funcs.playsound('halfHour')
 while True:
     now = datetime.datetime.now()
     todayDate = now.date().strftime("%d-%m-%Y")

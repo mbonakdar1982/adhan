@@ -2,7 +2,7 @@ from pygame import mixer
 import time
 import os
 import random
-import eyed3
+#import eyed3
 import re
 
 

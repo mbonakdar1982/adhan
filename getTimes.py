@@ -20,4 +20,4 @@ for month in data['data'].keys():
         table.loc[len(table)] = [fullDate, weekday, hijriDate, fajr, sunrise, dhuhr, maghrib]
 print(table)
 table.set_index('fullDate', inplace=True)
-table.to_excel('assets/praytimes2023.xlsx')
+table.to_excel('assets/praytimes2025.xlsx')
