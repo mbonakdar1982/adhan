@@ -9,23 +9,25 @@ import alsaaudio
 m = alsaaudio.Mixer()
 current_volume = m.getvolume()
 print('current volume: {}'.format(current_volume))
-m.setvolume(45)
+m.setvolume(35)
 hijriMonth = {'01': 'Muharram', '02': 'Safar', '03': 'Rabi-al-Awwal', '04': 'Rabi-al-Thani', '05': 'Jumada-al-Awwal', '06': 'Jumada-al-Thani', '07': 'Rajab', '08': 'Shaban', '09': 'Ramadan', '10': 'Shawwal', '11': 'Dhu-al-Qadah', '12': 'Dhu-al-Hijjah'}
 prayTimes = pd.read_excel('assets/praytimes2025.xlsx').set_index('fullDate')
 funcs.playsound('halfHour')
+talavat_time = 10 # minutes of reciting quran before adhan
 while True:
     now = datetime.datetime.now()
     todayDate = now.date().strftime("%d-%m-%Y")
     currentTime = now.time().strftime("%H:%M")
+    currentTime_advance_ramadan = (now + datetime.timedelta(minutes=12, seconds=21)).strftime("%H:%M")
+    currentTime_advance_other = (now + datetime.timedelta(minutes=talavat_time, seconds=0)).strftime("%H:%M")
     
-    currentTime_advance = (now + datetime.timedelta(minutes=12, seconds=21)).strftime("%H:%M")
     hour = int(currentTime[0:2])
     hijriDate = prayTimes.loc[todayDate, 'hijriDate']
     [hijri_day, hijri_month, hijri_year] = hijriDate.split('-')
     dhuhrAdhan = prayTimes.loc[todayDate, 'dhuhr']
     maghribAdhan = prayTimes.loc[todayDate, 'maghrib']
     weekday = prayTimes.loc[todayDate, 'weekday']
-    if hijri_month == '09' and currentTime_advance == maghribAdhan:
+    if hijri_month == '09' and currentTime_advance_ramadan == maghribAdhan:
         funcs.playdoa(doa='rabbana')
         funcs.playdoa(doa='tawashih')
         funcs.playAdhan()
@@ -35,7 +37,8 @@ while True:
         funcs.playdoa(doa='eftetah')
 
    
-    if currentTime == dhuhrAdhan:
+    if currentTime_advance_other == dhuhrAdhan:
+        funcs.playRadio("radio_talavat", 60 * talavat_time)
         funcs.playAdhan()
         funcs.playdoa(doa=weekday)
         if hijri_month == '07':
@@ -43,7 +46,8 @@ while True:
         elif hijri_month == '08':
             funcs.playdoa(doa='shaaban')
         funcs.playdoa(doa='doa_eftetah' if weekday == 'Wednesday' else 'random')
-    if currentTime == maghribAdhan:
+    if currentTime_advance_other == maghribAdhan:
+        funcs.playRadio("radio_talavat", 300)
         funcs.playAdhan()
         funcs.playdoa(doa=weekday)
         if hijri_month == '07':
@@ -63,8 +67,7 @@ while True:
         for i in range(hour):
             funcs.playsound('bell', 4)
         time.sleep(5)
-    print(currentTime)
-    print(currentTime_advance)
+    print(currentTime_advance_other)
     print('day: {}, month: {}'.format(hijri_day, hijriMonth[hijri_month]))
     print('Weekday: {}'.format(weekday))
     print('Maghrib: {}'.format(maghribAdhan))

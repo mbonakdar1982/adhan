@@ -4,8 +4,13 @@ import os
 import random
 #import eyed3
 import re
+import subprocess
+from radio import radio_channels
+import vlc
 
 
+
+SPEAKER_MAC = "90:F2:60:15:2E:2E"
 def segment(filePath, mode='random'):
     from pydub import AudioSegment
     from pydub.silence import split_on_silence
@@ -34,10 +39,6 @@ def segment(filePath, mode='random'):
 
     return None
         
-
-
-
-
 def playAdhan():
     options = os.listdir('assets/adhan/')
     adhanFile = 'assets/adhan/' + random.choice(options)
@@ -97,6 +98,57 @@ def playdoa(doa='random', duration=0):
         time.sleep(length if duration == 0 else duration * 60)
     return 'OK'
 
+def playRadio(channel, duration):
+    player = vlc.MediaPlayer(radio_channels[channel])
+    player.play()
+    time.sleep(duration)
+    player.stop()
+    return "OK"
+
+
+def run_cmd(cmd):
+    """Run a shell command and return output."""
+    result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    return result.stdout.strip()
+
+def bluetoothctl_command(command):
+    """Send command to bluetoothctl."""
+    return run_cmd(f'echo -e "{command}" | bluetoothctl')
+
+def connect_speaker(mac):
+    print("Turning on Bluetooth agent...")
+    bluetoothctl_command("power on")
+    bluetoothctl_command("agent on")
+    bluetoothctl_command("default-agent")
+
+    print("Scanning for devices...")
+    bluetoothctl_command("scan on")
+    time.sleep(5)
+    bluetoothctl_command("scan off")
+
+    print(f"Pairing with {mac}...")
+    bluetoothctl_command(f"pair {mac}")
+    time.sleep(2)
+
+    print(f"Trusting {mac}...")
+    bluetoothctl_command(f"trust {mac}")
+    time.sleep(1)
+
+    print(f"Connecting to {mac}...")
+    bluetoothctl_command(f"connect {mac}")
+    time.sleep(3)
+
+    print("Setting speaker as default audio sink...")
+    subprocess.run(["pactl", "set-default-sink", mac.replace(":", "_") + ".a2dp_sink"])
+
+    print("Done. Audio should now play through the Bluetooth speaker.")
+
+
+
+
+
+
 if __name__ == '__main__':
-    playdoa('Monday')
+    #playdoa('Monday')
+    subprocess.run(["pactl", "set-default-sink", SPEAKER_MAC.replace(":", "_") + ".a2dp_sink"])
     
